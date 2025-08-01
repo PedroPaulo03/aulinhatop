@@ -26,7 +26,7 @@ if st.button("Criar"):
     informacoes = {'nome': st.user.name,
                     'foto': st.user.picture,
                     'email': st.user.email,
-                    'hora': datetime.now()strftime("%H:%M:%S")}
+                    'hora': datetime.now().strftime("%H:%M:%S")}
     db.collection(colecao).add(informacoes)
     st.write(f"Criado com ID: {st.user.email}")
 
