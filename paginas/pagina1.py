@@ -19,8 +19,8 @@ db = conectar_firebase()
 colecao = 'usuarios2'
 
 # CREATE - Criar documento
-st.header("CREATE")
-nome = st.text_input("Nome")
+st.header("Guarde os dados do usuário")
+#nome = st.text_input("Nome")
 if st.button("Criar"):
     # Usa email do usuário como ID
     informacoes = {'nome': st.user.name,
@@ -28,7 +28,7 @@ if st.button("Criar"):
                     'email': st.user.email,
                     'hora': datetime.now().strftime("%H:%M:%S")}
     db.collection(colecao).add(informacoes)
-    st.write(f"Criado com ID: {st.user.email}")
+    st.write("Informações salvas com sucesso")
 
 
 # READ - Ler documentos  
