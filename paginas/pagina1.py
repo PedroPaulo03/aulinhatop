@@ -21,7 +21,7 @@ colecao = 'usuarios2'
 # CREATE - Criar documento
 st.header("Guarde os dados do usuário")
 #nome = st.text_input("Nome")
-if st.button("Criar"):
+if st.button("Salvar info do usuario"):
     # Usa email do usuário como ID
     informacoes = {'nome': st.user.name,
                     'foto': st.user.picture,
