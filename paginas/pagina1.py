@@ -1,7 +1,7 @@
 import streamlit as st
 import firebase_admin
 from firebase_admin import credentials, firestore
-from datetimetime import datetime
+from datetime import datetime
 st.title("Exemplos CRUD - Firebase")
 
 # Conectar Firebase
