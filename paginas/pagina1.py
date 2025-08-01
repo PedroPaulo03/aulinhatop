@@ -24,7 +24,7 @@ if st.button("Salvar info o usuário"):
     informacoes = {"nome": st.user.name,
                     "foto": st.user.picture,
                     "email": st.user.email,
-                    "hora": datetime.now().strtime('%H:%M:%S')
+                    "hora": datetime.now().strftime('%H:%M:%S')
     }
     db.collection(colecao).add(informacoes) # buscará a coleção na base de dados, criamos um dicionário 
     st.write("Informações salvas com sucesso!")
