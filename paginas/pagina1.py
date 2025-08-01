@@ -18,8 +18,7 @@ db = conectar_firebase()
 colecao = 'usuarios2'
 
 # CREATE - Criar documento
-st.header("CREATE")
-nome = st.text_input("Nome")
+st.header("CREATE") 
 if st.button("Salvar info o usuário"):
     # Usa email do usuário como ID
     informacoes = {"nome": st.user.name,
