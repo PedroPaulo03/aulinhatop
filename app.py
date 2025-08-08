@@ -12,4 +12,3 @@ paginas = {
 pg = st.navigation(paginas)
 pg.run()
 
-# comentario

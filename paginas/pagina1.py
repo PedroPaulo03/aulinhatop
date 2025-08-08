@@ -110,3 +110,28 @@ st.subheader("📊 Estatísticas")
 if st.button("Total de usuários"):
     docs = list(db.collection(colecao).stream())
     st.metric("Total de usuários", len(docs))
+
+
+st.divider()
+
+# funções para carregar uma nota específica no sistema como se fosse uma avaliacao. 
+# é necessario guardar o campo para cada usuario na base de dados e salvar a informacao
+# sempre que o usuario clicar no botao st.feedback, deve guardar a nota que ele deu
+# se ele muda a avaliação, deve atualizar o campo na base de dados
+# se o usuario nao avaliou, deve mostrar a mensagem "Avalie este conteúdo"
+
+st.header("⭐ Avalie este conteúdo")
+nota_atual = 0      
+doc = db.collection(colecao).document(st.user.email).get()
+if doc.exists:
+    dados = doc.to_dict()
+    nota_atual = dados.get('nota_avaliacao', 0) 
+    if nota_atual > 0:
+        st.write(f"Você avaliou este conteúdo com {nota_atual} estrelas.")
+    else:
+        st.write("Avalie este conteúdo")    
+        nota = st.slider("Sua avaliação", 0, 5, nota_atual, step=1)
+        if st.button("Enviar avaliação"):
+            db.collection(colecao).document(st.user.email).update({'nota_avaliacao': nota})
+            st.success("Avaliação salva!")
+            st.rerun()
