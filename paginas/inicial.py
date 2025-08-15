@@ -3,8 +3,8 @@ import numpy as np
 from google import genai
 from google.genai import types
 
-st.title("Página Inicial - Prof RICARDO!")
-
+st.title("FotoLateX - Página Inicial")
+st.markdown("*Bem-vindo ao seu escrivão especializado! Aqui você pode acompanhar seus códigos em LateX.*")
  
 
 if not st.user.is_logged_in:
