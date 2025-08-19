@@ -3,7 +3,7 @@ import numpy as np
 from google import genai
 from google.genai import types
 
-st.title("FotoLateX - Página Inicial")
+st.title("FotoLateX")
 st.markdown("*Bem-vindo ao seu escrivão especializado! Aqui você pode acompanhar seus códigos em LateX.*")
 st.markdown("É necessário log in para o uso da ferramenta, clique no botão a seguir. ")
 
