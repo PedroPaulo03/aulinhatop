@@ -7,7 +7,6 @@ from funcoes import(
     estruturar_markdown,   
 )
 
-st.write(f"Oi, {getattr(st.user, 'name', 'Usuário')}!")
   
 st.title("✍️ Transforme Notas Manuscritas em LaTeX")
 
