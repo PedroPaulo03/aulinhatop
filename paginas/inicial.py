@@ -5,7 +5,7 @@ from google.genai import types
 
 st.title("FotoLateX - Página Inicial")
 st.markdown("*Bem-vindo ao seu escrivão especializado! Aqui você pode acompanhar seus códigos em LateX.*")
- 
+st.markdown("É necessário log in para o uso da ferramenta, clique no botão a seguir. ")
 
 if not st.user.is_logged_in:
     # st.write(st.user)
