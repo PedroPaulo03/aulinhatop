@@ -164,6 +164,3 @@ with col4:
 
 
 
-
-if st.sidebar.button("Log out"):
-    st.logout()
