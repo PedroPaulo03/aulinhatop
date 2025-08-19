@@ -13,5 +13,5 @@ if not st.user.is_logged_in:
             # Registra o usuário no Firestore se for o primeiro acesso (login_usuario faz isso)
             # REMOVIDO DAQUI: login_usuario() 
             st.login() # Função de login do Streamlit (redireciona)
-        if st.sidebar.button("Log out"):
-        st.logout()
+if st.sidebar.button("Log out"):
+    st.logout()
