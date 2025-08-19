@@ -12,11 +12,11 @@ if not st.user.is_logged_in:
     if st.button("Login com Google", type="primary", use_container_width=True, icon=':material/login:'):
         st.login() # Função de login do Streamlit (redireciona)
 
-        with open('termos_e_privacidade.md', 'r', encoding='utf-8') as file:
-            termos_content = file.read()
+    with open('termos_e_privacidade.md', 'r', encoding='utf-8') as file:
+        termos_content = file.read()
 
-        with st.popover("Ao fazer login, você concorda com nossos Termos de Uso e Política de Privacidade", use_container_width=True):
-            st.markdown(termos_content, unsafe_allow_html=True)
+    with st.popover("Ao fazer login, você concorda com nossos Termos de Uso e Política de Privacidade", use_container_width=True):
+        st.markdown(termos_content, unsafe_allow_html=True)
 
                     
 if st.sidebar.button("Log out"):
