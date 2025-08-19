@@ -8,7 +8,7 @@ st.markdown("*Bem-vindo ao seu escrivão especializado! Aqui você pode acompanh
  
 
 if not st.user.is_logged_in:
-    st.write(st.user)
+    # st.write(st.user)
     if st.button("Log in"):
         st.login()
         
