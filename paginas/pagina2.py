@@ -6,4 +6,3 @@ from funcoes import(
     estruturar_latex,
     estruturar_markdown,   
 )
-
