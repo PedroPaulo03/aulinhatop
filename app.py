@@ -1,23 +1,16 @@
 import streamlit as st
 
-paginas_publicas = [
-    st.Page("paginas/inicial.py", title="Início", icon='💬', default=True),
-    st.Page("paginas/pagina3.py", title="Termos de Uso", icon='📄')
-]
+if not hasattr(st.user, 'is_logged_in') or not st.user.is_logged_in:
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        # Logo centralizada
+        st.image('imagelatex/capa.jpg', use_container_width=True)
+        st.title("Escrivão de LaTeX") 
+        st.markdown("Faça login com sua conta Google")
 
-paginas_privadas = [
-    st.Page("paginas/pagina1.py", title="Transformação", icon='✍️'),
-    st.Page("paginas/pagina2.py", title="Minha Conta", icon='👨‍💻')
-]
-
-if st.user.is_logged_in:
-    paginas = {
-        "Páginas": paginas_publicas + paginas_privadas
-    }
+        # Botão de login
+        if st.button("Login com Google", type="primary", use_container_width=True, icon=':material/login:'):
+            st.login()  # redireciona para o login do Streamlit
 else:
-    paginas = {
-        "Páginas": paginas_publicas
-    }
-
-pg = st.navigation(paginas)
-pg.run()
+    st.success(f"Oi, {getattr(st.user, 'name', 'Usuário')}! ✅")
+    st.write("Você está logado. Use o menu lateral para acessar as ferramentas.")
