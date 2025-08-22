@@ -7,5 +7,3 @@ from funcoes import(
     estruturar_markdown,   
 )
 
-        with st.sidebar:
-             st.logout()
