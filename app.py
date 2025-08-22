@@ -10,6 +10,11 @@ if st.user.is_logged_in:
     paginas = {
         "Páginas": paginas_privadas
     }
+    pg = st.navigation(paginas)
+    pg.run()
+
+
+
 else:
     st.title("FotoLateX")
     st.markdown("*Bem-vindo ao seu escrivão especializado! Aqui você pode acompanhar seus códigos em LateX.*")
@@ -24,6 +29,3 @@ else:
 
     with st.popover("Ao fazer login, você concorda com nossos Termos de Uso e Política de Privacidade", use_container_width=True):
         st.markdown(termos_content, unsafe_allow_html=True)
-
-pg = st.navigation(paginas)
-pg.run()
