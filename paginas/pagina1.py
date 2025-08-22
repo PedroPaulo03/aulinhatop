@@ -9,7 +9,9 @@ from funcoes import(
 
 st.set_page_config(layout = "wide")
   
-st.title("✍️ Transforme Notas Manuscritas em LaTeX")
+st.title("✍️ Transforme Notas em LaTeX")
+st.info("Instruções: o app tem finalidade de transformar o conteúdo de uma imagem (ela pode ser foto: de uma lousa de aula, seu caderno ou um manuscrito) em formato LateX")
+
 
 INSTRUCOES = """
 você é um assistente de IA que converte anotações manuscritas em **LaTeX puro**  
