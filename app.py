@@ -16,8 +16,8 @@ if st.user.is_logged_in:
 
     pg = st.navigation(paginas)
     pg.run()
-         with st.sidebar:
-             st.logout()
+    with st.sidebar:
+        st.logout()
 
 else:
     st.title("FotoLateX")
