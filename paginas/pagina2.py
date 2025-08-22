@@ -6,3 +6,5 @@ from funcoes import(
     estruturar_latex,
     estruturar_markdown,   
 )
+with st.sidebar: 
+    st.lougout

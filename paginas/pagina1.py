@@ -7,6 +7,7 @@ from funcoes import(
     estruturar_markdown,   
 )
 
+st.set_page_config(layout = "wide")
   
 st.title("✍️ Transforme Notas Manuscritas em LaTeX")
 
