@@ -16,7 +16,9 @@ if st.user.is_logged_in:
 
     pg = st.navigation(paginas)
     pg.run()
-    
+         with st.sidebar:
+             st.logout()
+
 else:
     st.title("FotoLateX")
     st.markdown("*Bem-vindo ao seu escrivão especializado! Aqui você pode acompanhar seus códigos em LateX.*")
