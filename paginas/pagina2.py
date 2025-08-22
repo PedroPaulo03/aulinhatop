@@ -7,3 +7,5 @@ from funcoes import(
     estruturar_markdown,   
 )
 
+if st.sidebar.button("Log out"):
+    st.logout()
