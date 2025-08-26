@@ -84,32 +84,35 @@ with col2:
 
 st.divider()
 with st.spinner("Gerando códigos", show_time=True, width = "stretch"):
-    col3, col4 = st.columns(2)
+    try:
+        col3, col4 = st.columns(2)
 
-    with col3:
-        if saidas_latex:
-            st.subheader('Código LaTeX gerado:')
-            st.code(saidas_latex, language='latex', line_numbers=True, height=300)
-            st.download_button(
-                    label="Baixar código LaTeX",
-                    data=saida_final_latex,            # sua string de texto
-                    file_name="relatorio.txt",   # extensão .txt
-                    mime="text/plain",
+        with col3:
+            if saidas_latex:
+                st.subheader('Código LaTeX gerado:')
+                st.code(saidas_latex, language='latex', line_numbers=True, height=300)
+                st.download_button(
+                        label="Baixar código LaTeX",
+                        data=saida_final_latex,            # sua string de texto
+                        file_name="relatorio.txt",   # extensão .txt
+                        mime="text/plain",
+                        use_container_width=True,
+                        key ='download_latex'  # Adiciona uma chave única para evitar conflitos  
+                    )
+
+        with col4:
+            if saidas_markdown:
+                st.subheader('Código Markdown gerado:')
+                st.code(saidas_markdown, language='markdown', line_numbers=True, height=300)
+                st.download_button(
+                    label="Baixar código Markdown",
+                    data=saida_final_markdown,            # sua string de texto
+                    file_name="texto.md",   # extensão .md
+                    mime="text/markdown",
                     use_container_width=True,
-                    key ='download_latex'  # Adiciona uma chave única para evitar conflitos  
-                )
-
-    with col4:
-        if saidas_markdown:
-            st.subheader('Código Markdown gerado:')
-            st.code(saidas_markdown, language='markdown', line_numbers=True, height=300)
-            st.download_button(
-                label="Baixar código Markdown",
-                data=saida_final_markdown,            # sua string de texto
-                file_name="texto.md",   # extensão .md
-                mime="text/markdown",
-                use_container_width=True,
-                key ='download_markdown'  # Adiciona uma chave única para evitar conflitos           
-                )
+                    key ='download_markdown'  # Adiciona uma chave única para evitar conflitos           
+                    )
+    except Exception as e:
+        st.error(f"Erro ao gerar os códigos:{e}")
 
 
