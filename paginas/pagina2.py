@@ -64,7 +64,7 @@ if st.user:
             # Decodifica imagem base64 e mostra
             img_bytes = base64.b64decode(item['imagem'])
             img = Image.open(io.BytesIO(img_bytes))
-            st.image(img, caption="Imagem enviada", use_column_width=True)
+            st.image(img, caption="Imagem enviada", use_container_width=True)
 
             # Renderiza resposta em LaTeX
             st.latex(item['resposta_latex'])
