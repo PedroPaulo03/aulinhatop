@@ -50,7 +50,7 @@ saidas_markdown = None
 
 with col2:
     if imagens_carregadas and len(imagens_carregadas) > 0:  
-        if st.button("Processar Imagem e Gerar Códigos", key="process_button"):
+        if st.button("Processar Imagem e Gerar Códigos", key="process_button", use_container_width=True):
             # Garante que o arquivo foi carregado antes de processa
             saidas_latex = ''  # Variável para armazenar as saídas LaTeX
             saidas_markdown = ''  # Variável para armazenar as saídas Markdown
