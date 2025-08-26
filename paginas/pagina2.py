@@ -2,8 +2,11 @@ import streamlit as st
 from datetime import datetime
 import firebase_admin
 from firebase_admin import credentials, firestore
+from PIL import Image
+import io
+import base64
 
-# Conecta ao Firebase
+# Conectar ao Firebase
 @st.cache_resource
 def conectar_firebase():
     try:
@@ -14,36 +17,60 @@ def conectar_firebase():
     return firestore.client()
 
 db = conectar_firebase()
-colecao = 'usuarios2'  # Nome da coleção no Firestore
+colecao = 'usuarios2'
 
-# Título da página
-st.title("👤 Meu Perfil e Histórico")
+st.title("📚 Minhas Conversas")
 
-# Verifica se o usuário está logado
 if st.user:
-    st.subheader("Informações do Usuário")
-    st.image(st.user.picture, width=100)
-    st.write(f"**Nome:** {st.user.name}")
-    st.write(f"**Email:** {st.user.email}")
-
-    # Pega o documento do usuário no Firestore
     user_ref = db.collection(colecao).document(st.user.email)
     doc = user_ref.get()
     dados = doc.to_dict() if doc.exists else {}
 
-    # Exibir o histórico de conversas
-    st.subheader("💬 Histórico de Conversas")
-    historico = dados.get('conversas', [])
+    if 'conversas' not in dados:
+        dados['conversas'] = []
 
-    if historico:
-        for item in historico:
-            st.markdown(f"**{item['data']}** — {item['mensagem']}")
+    # Upload de imagem
+    imagem = st.file_uploader("Envie uma imagem com a questão", type=["png", "jpg", "jpeg"])
+    
+    if imagem and st.button("🔍 Processar imagem"):
+        # Simula resposta em LaTeX (substitua pelo seu modelo real)
+        resposta_latex = r"f(x) = \int_{0}^{x} e^{-t^2} dt"
+
+        # Codifica imagem para base64 para salvar como texto no Firebase
+        bytes_imagem = imagem.read()
+        imagem_base64 = base64.b64encode(bytes_imagem).decode("utf-8")
+
+        # Adiciona ao histórico
+        dados['conversas'].append({
+            'imagem': imagem_base64,
+            'resposta_latex': resposta_latex,
+            'horario': datetime.now().strftime("%d/%m %H:%M")
+        })
+
+        user_ref.set(dados)
+        st.success("Resposta gerada e salva no histórico.")
+        st.rerun()
+
+    st.divider()
+    st.subheader("📜 Histórico de Imagens e Respostas")
+
+    conversas = dados.get('conversas', [])
+
+    if not conversas:
+        st.info("Nenhuma conversa salva ainda.")
     else:
-        st.info("Você ainda não possui conversas salvas.")
+        for item in reversed(conversas):
+            st.markdown(f"🕒 {item['horario']}")
+            # Decodifica imagem base64 e mostra
+            img_bytes = base64.b64decode(item['imagem'])
+            img = Image.open(io.BytesIO(img_bytes))
+            st.image(img, caption="Imagem enviada", use_column_width=True)
+
+            # Renderiza resposta em LaTeX
+            st.latex(item['resposta_latex'])
+
 else:
-    st.warning("Você precisa estar logado para ver esta página.")
-
-
+    st.warning("Você precisa estar logado para usar esta funcionalidade.")
 
 
 
