@@ -19,7 +19,7 @@ def conectar_firebase():
     db = conectar_firebase()
     colecao = 'usuarios2'
 
-st.title("📚 Minhas Conversas Matemáticas")
+st.title("📚 Minhas Conversas")
 
 if st.user:
     user_ref = db.collection(colecao).document(st.user.email)
