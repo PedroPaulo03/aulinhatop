@@ -1,6 +1,5 @@
 import streamlit as st
 
-
 paginas_privadas = [
     st.Page("paginas/pagina1.py", title="Transformação", icon='✍️', default = True),
     st.Page("paginas/pagina2.py", title="Minha Conta", icon='👨‍💻')
