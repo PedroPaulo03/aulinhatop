@@ -10,9 +10,7 @@ from funcoes import(
 st.set_page_config(layout = "wide")
   
 st.title("✍️ Transforme Notas em LaTeX")
-st.info("Instruções: Este app foi pensando para atenter as seguintes situações:
-        "1" "Você é um monitor que ao resolver questões no papel, tem interesse em digitalizar o arquivo,
-        "passando assim para o formato LateX, e é nessa prte que entramos, preparamos a escrita no LateX para você. ")
+st.info("Instruções: Este app foi pensando para atenter as seguintes pessoas: o monitor, professor, aluno e pesquisador que ao fazer algo de maneira escrita na mão grande no papel, quadro ou tablet, que contenha fórmulas matemáticas dutante o texto e tem interesse em digitalizar o arquivo, passando assim para o formato LateX, e é nessa prte que entramos, preparamos a escrita no LateX para você. )
 
 
 INSTRUCOES = """
