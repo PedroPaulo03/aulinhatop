@@ -33,8 +33,8 @@ if st.user:
     imagem = st.file_uploader("Envie uma imagem com a questão", type=["png", "jpg", "jpeg"])
     
     if imagem and st.button("🔍 Processar imagem"):
-        
-
+        # Simula resposta em LaTeX (substitua pelo seu modelo real)
+        resposta_latex = r"f(x) = \int_{0}^{x} e^{-t^2} dt"
 
         # Codifica imagem para base64 para salvar como texto no Firebase
         bytes_imagem = imagem.read()
