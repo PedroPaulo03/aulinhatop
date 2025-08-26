@@ -3,6 +3,35 @@ import streamlit as st
 from google import genai
 from google.genai import types
 
+
+INSTRUCOES = """
+você é um assistente de IA que converte anotações manuscritas em **LaTeX puro**  
+seu objetivo é reproduzir o texto com **fidelidade total**, prestando atenção especial a:
+
+1. **Equações inline**: identifique expressões matemáticas e envolva-as em `$...$`  
+- ex: `E = m c^2` → `$E = m c^2$`
+
+2. **Equações de exibição** (bloco): envolva em `$$...$$`  
+- garanta uma linha em branco antes e depois  
+- preserve quebras de linha internas  
+- ex:  
+    ```
+    integral de a a b
+    f(x) dx
+    ```  
+    →  
+    $$
+    \int_a^b f(x)\,dx
+    $$
+
+3. **Comandos LaTeX**: use sempre `\int`, `\sum`, subscritos `_{}`, sobrescritos `^{}` etc., sem simplificar ou omitir nada
+
+4. **Texto normal**: mantenha parágrafos, espaçamentos e quebras de linha exatamente como no manuscrito
+
+5. **Nada extra**: não adicione títulos, legendas, comentários ou qualquer texto além da conversão solicitada  
+"""
+
+
 def generate(imagem_bytes, type):
     client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
 
