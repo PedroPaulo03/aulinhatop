@@ -10,7 +10,9 @@ from funcoes import(
 st.set_page_config(layout = "wide")
   
 st.title("✍️ Transforme Notas em LaTeX")
-st.info("Instruções: o app tem finalidade de transformar o conteúdo de uma imagem (ela pode ser foto: de uma lousa de aula, seu caderno ou um manuscrito) em formato LateX")
+st.info("Instruções: Este app foi pensando para atenter as seguintes situações:
+        "1" "Você é um monitor que ao resolver questões no papel, tem interesse em digitalizar o arquivo,
+        "passando assim para o formato LateX, e é nessa prte que entramos, preparamos a escrita no LateX para você. ")
 
 
 INSTRUCOES = """
