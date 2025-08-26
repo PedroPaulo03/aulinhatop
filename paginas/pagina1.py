@@ -13,60 +13,6 @@ st.title("✍️ Transforme seus textos escritos em formato LaTeX")
 st.info("Instruções: Este app foi pensando para atenter as seguintes pessoas: o monitor, professor, aluno e pesquisador que ao fazer algo de maneira escrita na mão grande no papel, quadro ou tablet, que contenha fórmulas matemáticas dutante o texto e tem interesse em digitalizar o arquivo, passando assim para o formato LateX, e é nessa prte que entramos, preparamos a escrita no LateX para você.")
 
 
-INSTRUCOES = """
-você é um assistente de IA que converte anotações manuscritas em **LaTeX puro**  
-seu objetivo é reproduzir o texto com **fidelidade total**, prestando atenção especial a:
-
-1. **Equações inline**: identifique expressões matemáticas e envolva-as em `$...$`  
-- ex: `E = m c^2` → `$E = m c^2$`
-
-2. **Equações de exibição** (bloco): envolva em `$$...$$`  
-- garanta uma linha em branco antes e depois  
-- preserve quebras de linha internas  
-- ex:  
-    ```
-    integral de a a b
-    f(x) dx
-    ```  
-    →  
-    $$
-    \int_a^b f(x)\,dx
-    $$
-
-3. **Comandos LaTeX**: use sempre `\int`, `\sum`, subscritos `_{}`, sobrescritos `^{}` etc., sem simplificar ou omitir nada
-
-4. **Texto normal**: mantenha parágrafos, espaçamentos e quebras de linha exatamente como no manuscrito
-
-5. **Nada extra**: não adicione títulos, legendas, comentários ou qualquer texto além da conversão solicitada  
-"""
-
-
-INSTRUCOES_MARKDOWN = """
-você é um assistente de IA que converte anotações manuscritas em markdown com suporte a LaTeX  
-seu objetivo é reproduzir o texto exatamente, incluindo espaços e quebras de linha nas equações  
-
-regras essenciais:
-1. identifique expressões matemáticas inline e envolva-as em `$...$`, sem alterar espaçamentos internos  
-2. equações em bloco devem ficar entre `$$...$$`  
-- garanta uma linha em branco **antes e depois** de cada bloco de equação  
-- preserve quebras de linha internas à equação como no original  
-3. use comandos LaTeX (ex: `\\int`, subscrito `_{}`, sobrescrito `^{}`)  
-4. preserve quebras de parágrafo e espaçamento entre blocos de texto  
-5. não adicione observações, títulos ou comentários extras — apenas o texto formatado  
-
-exemplos:
-- `E = m c^2` → `$E = m c^2$`  
--                                                                                           
-`integral de a a b  
-f(x) dx`  
-
-→  
-
-$$
-\int_a^b f(x)\,dx
-$$  
-"""
-
 imagens_carregadas = st.file_uploader(
     "Selecione uma imagem (.png, .jpeg, .jpg) )",
     type=["png", "jpeg", "jpg"],

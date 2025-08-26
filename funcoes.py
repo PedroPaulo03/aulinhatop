@@ -31,7 +31,6 @@ seu objetivo é reproduzir o texto com **fidelidade total**, prestando atenção
 5. **Nada extra**: não adicione títulos, legendas, comentários ou qualquer texto além da conversão solicitada  
 """
 
-
 def generate(imagem_bytes, type):
     client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
 
@@ -60,6 +59,32 @@ def generate(imagem_bytes, type):
     )
 
     return resposta.text
+
+INSTRUCOES_MARKDOWN = """
+você é um assistente de IA que converte anotações manuscritas em markdown com suporte a LaTeX  
+seu objetivo é reproduzir o texto exatamente, incluindo espaços e quebras de linha nas equações  
+
+regras essenciais:
+1. identifique expressões matemáticas inline e envolva-as em `$...$`, sem alterar espaçamentos internos  
+2. equações em bloco devem ficar entre `$$...$$`  
+- garanta uma linha em branco **antes e depois** de cada bloco de equação  
+- preserve quebras de linha internas à equação como no original  
+3. use comandos LaTeX (ex: `\\int`, subscrito `_{}`, sobrescrito `^{}`)  
+4. preserve quebras de parágrafo e espaçamento entre blocos de texto  
+5. não adicione observações, títulos ou comentários extras — apenas o texto formatado  
+
+exemplos:
+- `E = m c^2` → `$E = m c^2$`  
+-                                                                                           
+`integral de a a b  
+f(x) dx`  
+
+→  
+
+$$
+\int_a^b f(x)\,dx
+$$  
+"""
 
 def gerar_markdown(imagem_bytes, type):
     client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
