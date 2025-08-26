@@ -95,6 +95,7 @@ with col3:
                 data=saida_final_latex,            # sua string de texto
                 file_name="relatorio.txt",   # extensão .txt
                 mime="text/plain",
+                use_container_width=True,
                 key ='download_latex'  # Adiciona uma chave única para evitar conflitos  
             )
 
@@ -107,6 +108,7 @@ with col4:
             data=saida_final_markdown,            # sua string de texto
             file_name="texto.md",   # extensão .md
             mime="text/markdown",
+            use_container_width=True,
             key ='download_markdown'  # Adiciona uma chave única para evitar conflitos           
             )
 
