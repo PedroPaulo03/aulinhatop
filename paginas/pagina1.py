@@ -13,7 +13,7 @@ st.title("✍️ Transforme seus textos escritos em formato LaTeX")
 st.info("Instruções: Este app foi pensando para atenter as seguintes pessoas: o monitor, professor, aluno e pesquisador que ao fazer algo de maneira escrita na mão grande no papel, quadro ou tablet, que contenha fórmulas matemáticas dutante o texto e tem interesse em digitalizar o arquivo, passando assim para o formato LateX, e é nessa prte que entramos, preparamos a escrita no LateX para você.")
 
 
-INSTRUCOES = """
+INSTRUCOES_LATEX = """
 você é um assistente de IA que converte anotações manuscritas em **LaTeX puro**  
 seu objetivo é reproduzir o texto com **fidelidade total**, prestando atenção especial a:
 
