@@ -16,10 +16,10 @@ def conectar_firebase():
         firebase_admin.initialize_app(cred)
     return firestore.client()
 
-    db = conectar_firebase()
-    colecao = 'usuarios2'
+db = conectar_firebase()
+colecao = 'usuarios2'
 
-st.title("📚 Minhas Conversas")
+st.title("📚 Minhas Conversas Matemáticas")
 
 if st.user:
     user_ref = db.collection(colecao).document(st.user.email)
@@ -41,7 +41,7 @@ if st.user:
         imagem_base64 = base64.b64encode(bytes_imagem).decode("utf-8")
 
         # Adiciona ao histórico
-        dados['conversas'].add({
+        dados['conversas'].append({
             'imagem': imagem_base64,
             'resposta_latex': resposta_latex,
             'horario': datetime.now().strftime("%d/%m %H:%M")
@@ -64,14 +64,13 @@ if st.user:
             # Decodifica imagem base64 e mostra
             img_bytes = base64.b64decode(item['imagem'])
             img = Image.open(io.BytesIO(img_bytes))
-            st.image(img, caption="Imagem enviada", use_container_width=True)
+            st.image(img, caption="Imagem enviada", use_column_width=True)
 
             # Renderiza resposta em LaTeX
             st.latex(item['resposta_latex'])
 
 else:
     st.warning("Você precisa estar logado para usar esta funcionalidade.")
-
 
 
 if st.sidebar.button("Log out"):
