@@ -10,7 +10,7 @@ st.title("Visualize o Histórico de Códigos Feitos!")
 if st.user:
     db = conectar_firebase()
     colecao = 'usuarios2'
-    referencia = db.colletion(colecao).document(st.user_email).collection('saidas')
+    referencia = db.colletion(colecao).document(st.user.email).collection('saidas')
 
     if saidas:
         docs = referencia.stream()
@@ -30,9 +30,7 @@ if st.user:
         visualizacao = st.selectbox('Selecione uma saída para visualizar', options = lista_ids_saidas)
 
         if st.button('Visualizar'):
-            col1, col2 = st.columns(2)
-            with col1:
-                st.image()
+            
     else:
         st.info('Você ainda não carregou nenhuma imagem. Acesse a aba Transformação para converter sua primeira imagem em código LaTeX ou Markdown!')
 else:

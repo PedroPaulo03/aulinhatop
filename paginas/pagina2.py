@@ -68,10 +68,12 @@ if st.user:
             if st.button("Processar Imagem e Gerar Códigos", key="process_button", use_container_width=True):
                 saidas_latex = ''
                 saidas_markdown = ''
+                lista_bytes = []
                 for i, imagem_carregada in enumerate(imagens_carregadas):
                     if imagem_carregada.getvalue():
                         with st.spinner(f"Convertendo texto da página {i+1} para Markdown e LaTeX..."):
                             file_bytes = imagem_carregada.getvalue()
+                            lista_bytes.append(file_bytes)
                             try:
                                 saida_latex = generate(file_bytes, type=imagem_carregada.type)
                                 saidas_latex += saida_latex + "\n\n"
@@ -101,7 +103,8 @@ if st.user:
                 saida_final_markdown = estruturar_markdown(saidas_markdown)
                 
                 # Salvando saídas no firebase
-                salvar_saidas(markdown = saidas_markdown, latex = saidas_latex, markdown_estruturado = saida_final_markdown, latex_estruturado = saida_final_latex)
+                salvar_saidas(markdown = saidas_markdown, latex = saidas_latex, markdown_estruturado = saida_final_markdown, latex_estruturado = saida_final_latex,
+                imagem_bytes=lista_bytes)
 
                 col3, col4 = st.columns(2)
                 with col3:

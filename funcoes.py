@@ -2,7 +2,6 @@ import numpy as np
 import streamlit as st
 import firebase_admin
 import logging
-import base64
 from firebase_admin import credentials, firestore
 from datetime import datetime
 from google import genai
@@ -230,7 +229,7 @@ def salvar_saidas(markdown, latex, markdown_estruturado, latex_estruturado, imag
         latex (str): Código em LaTeX bruto.
         markdown_estruturado (str): Versão estruturada do Markdown.
         latex_estruturado (str): Versão estruturada do LaTeX.
-        imagem_bytes (bytes, opcional): Bytes da imagem a ser salva no Firestore.
+        imagem_bytes (str): código bytes da imagem
 
     Returns:
         str | bool: O ID do documento criado em caso de sucesso,
@@ -261,12 +260,8 @@ def salvar_saidas(markdown, latex, markdown_estruturado, latex_estruturado, imag
         }
 
         if imagem_bytes:
-            try:
-                imagem_base64 = base64.b64encode(imagem_bytes).decode('utf-8')
-                dicionario['imagem'] = imagem_base64
-            except Exception as e:
-                logging.error(f"Erro ao salvar a imagem: {e}")
-
+            dicionario['imagem'] = base64.b64encode(imagem_bytes).decode("utf-8")
+            
         referencia.set(dicionario)
         logging.info(f"Saída salva com sucesso. DocID={referencia.id}, User={st.user.email}")
         return referencia.id
