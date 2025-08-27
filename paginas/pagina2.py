@@ -99,6 +99,9 @@ if st.user:
                 # Preparar para download
                 saida_final_latex = estruturar_latex(saidas_latex)
                 saida_final_markdown = estruturar_markdown(saidas_markdown)
+                
+                # Salvando saídas no firebase
+                salvar_saidas(markdown = saidas_markdown, latex = saidas_latex, markdown_estruturado = saida_final_markdown, latex_estruturado = saida_final_latex)
 
                 col3, col4 = st.columns(2)
                 with col3:
@@ -138,8 +141,6 @@ if st.user:
             img = Image.open(io.BytesIO(img_bytes))
             st.image(img, caption="Imagem enviada", use_column_width=True)
             st.latex(item['resposta_latex'])
-
-    salvar_saidas(markdown = saidas_markdown, latex = saidas_latex, markdown_estruturado = saida_final_markdown, latex_estruturado = saida_final_latex)
 
 
 else:

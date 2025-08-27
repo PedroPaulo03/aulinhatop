@@ -1,6 +1,7 @@
 import numpy as np
 import streamlit as st
 import firebase_admin
+import logging
 from firebase_admin import credentials, firestore
 from datetime import datetime
 from google import genai
