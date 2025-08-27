@@ -15,23 +15,28 @@ if st.user:
     saidas = list(referencia.stream())
     if saidas:
         lista_ids_saidas = []
+        lista_docs_ids = []
         for doc in saidas:
             id = doc.id
             try:
                  # Converte string para datetime
-                dt = datetime(id, "%Y%m%d%H%M%S")
+                dt = datetime.strptime(doc_id, "%Y%m%d%H%M%S")
                 # Formata para string legível
                 legivel = dt.strftime("%d/%m/%Y %H:%M:%S")
                 lista_ids_saidas.append(f'Feito em: {legivel}')
+        
+            lista_docs_ids.append(id)
 
             except Exception as e:
                 print(f'Erro ao transformar a data em formato legível: {e}')
             
         visualizacao = st.selectbox('Selecione uma saída para visualizar', options = lista_ids_saidas)
+        idx = lista_ids_saidas.index(visualizacao)
+        doc_id_real = lista_docs_ids[idx]
 
         if st.button('Visualizar'):
             col1, col2 = st.columns(2)
-            documento = db.collection(colecao).document(st.user.email).collection('saidas').document(visualizacao).get().to_dict()
+            documento = db.collection(colecao).document(st.user.email).collection('saidas').document(doc_id_real).get().to_dict()
              
             with col1:
                  st.header('Código LaTeX')
