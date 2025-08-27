@@ -25,7 +25,7 @@ if st.user:
                 lista_ids_saidas.append(f'Feito em: {legivel}')
 
             except Exception as e:
-                return f'Erro ao transformar a data em formato legível: {e}'
+                print(f'Erro ao transformar a data em formato legível: {e}')
             
         visualizacao = st.selectbox('Selecione uma saída para visualizar', options = lista_ids_saidas)
 
