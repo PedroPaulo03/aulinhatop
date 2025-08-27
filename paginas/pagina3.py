@@ -10,7 +10,7 @@ st.title("Visualize o Histórico de Códigos Feitos!")
 if st.user:
     db = conectar_firebase()
     colecao = 'usuarios2'
-    referencia = db.colletion(colecao).document(st.user.email).collection('saidas')
+    referencia = db.collection(colecao).document(st.user.email).collection('saidas')
 
     if saidas:
         docs = referencia.stream()
@@ -31,7 +31,7 @@ if st.user:
 
         if st.button('Visualizar'):
             col1, col2 = st.columns(2)
-            documento = db.colletion(colecao).document(st.user.email).collection('saidas').document(visualizacao).get().to_dict()
+            documento = db.collection(colecao).document(st.user.email).collection('saidas').document(visualizacao).get().to_dict()
              
             with col1:
                  st.header('Código LaTeX')
