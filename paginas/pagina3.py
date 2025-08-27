@@ -24,8 +24,7 @@ if st.user:
                 # Formata para string legível
                 legivel = dt.strftime("%d/%m/%Y %H:%M:%S")
                 lista_ids_saidas.append(f'Feito em: {legivel}')
-        
-            lista_docs_ids.append(id)
+                lista_docs_ids.append(id)
 
             except Exception as e:
                 print(f'Erro ao transformar a data em formato legível: {e}')
