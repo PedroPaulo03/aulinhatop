@@ -1,5 +1,6 @@
 import numpy as np
 import streamlit as st
+from datetime import datetime
 from google import genai
 from google.genai import types
 
@@ -194,3 +195,71 @@ def estruturar_markdown(texto: str) -> str:
     )
 
     return resposta.text
+
+# Firebase
+@st.cache_resource
+def conectar_firebase():
+    try:
+        firebase_admin.get_app()
+    except ValueError:
+        cred = credentials.Certificate(dict(st.secrets["firebase"]))
+        firebase_admin.initialize_app(cred)
+    return firestore.client()
+
+
+def salvar_saidas(markdown, latex, markdown_estruturado, latex_estruturado):
+    """
+    Salva as saídas de processamento (Markdown e LaTeX) no Firestore.
+
+    Estrutura no Firestore:
+        usuarios2 (coleção)
+            └── <email_do_usuario> (documento)
+                    └── saidas (subcoleção)
+                            └── <doc_id_timestamp> (documento)
+                                ├── saida_markdown
+                                ├── saida_latex
+                                ├── markdown_estruturado
+                                └── latex_estruturado
+
+    Args:
+        markdown (str): Código em Markdown bruto.
+        latex (str): Código em LaTeX bruto.
+        markdown_estruturado (str): Versão estruturada do Markdown.
+        latex_estruturado (str): Versão estruturada do LaTeX.
+
+    Returns:
+        str | bool: O ID do documento criado em caso de sucesso,
+                    ou False se não for possível salvar.
+    """
+
+    if not hasattr(st.user, 'email'):
+        logging.warning("Tentativa de salvar saída sem usuário autenticado.")
+        return False
+
+    try:
+        db = conectar_firebase()
+        colecao = 'usuarios2'
+        doc_id = datetime.now().strftime("%Y%m%d%H%M%S")
+
+        referencia = (
+            db.collection(colecao)
+              .document(st.user.email)
+              .collection('saidas')
+              .document(doc_id)
+        )
+
+        dicionario = {
+            'saida_markdown': markdown,
+            'saida_latex': latex,
+            'markdown_estruturado': markdown_estruturado,
+            'latex_estruturado': latex_estruturado
+        }
+
+        referencia.set(dicionario)
+        logging.info(f"Saída salva com sucesso. DocID={referencia.id}, User={st.user.email}")
+        return referencia.id
+
+    except Exception as e:
+        logging.error(f"Erro ao salvar saída no Firestore: {e}", exc_info=True)
+        return False
+

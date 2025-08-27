@@ -12,21 +12,13 @@ from funcoes import (
     gerar_markdown,
     estruturar_latex,
     estruturar_markdown,
+    conectar_firebase,
+    salvar_saidas
 )
 
 # Config
 st.set_page_config(layout="wide")
 st.title("✍️ Transforme seus textos escritos em formato LaTeX")
-
-# Firebase
-@st.cache_resource
-def conectar_firebase():
-    try:
-        firebase_admin.get_app()
-    except ValueError:
-        cred = credentials.Certificate(dict(st.secrets["firebase"]))
-        firebase_admin.initialize_app(cred)
-    return firestore.client()
 
 db = conectar_firebase()
 colecao = 'usuarios2'
@@ -148,6 +140,9 @@ if st.user:
             img = Image.open(io.BytesIO(img_bytes))
             st.image(img, caption="Imagem enviada", use_column_width=True)
             st.latex(item['resposta_latex'])
+
+    salvar_saidas(markdown = saidas_markdown, latex = saidas_latex, markdown_estruturado = saida_final_markdown, latex_estruturado = saida_final_latex)
+
 
 else:
     st.warning("Você precisa estar logado para usar esta funcionalidade.")
