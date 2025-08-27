@@ -2,6 +2,7 @@ import numpy as np
 import streamlit as st
 import firebase_admin
 import logging
+import base64
 from firebase_admin import credentials, firestore
 from datetime import datetime
 from google import genai
@@ -265,7 +266,7 @@ def salvar_saidas(markdown, latex, markdown_estruturado, latex_estruturado, imag
                 dicionario['imagem'] = imagem_base64
             except Exception as e:
                 logging.error(f"Erro ao salvar a imagem: {e}")
-                
+
         referencia.set(dicionario)
         logging.info(f"Saída salva com sucesso. DocID={referencia.id}, User={st.user.email}")
         return referencia.id
