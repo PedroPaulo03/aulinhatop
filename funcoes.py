@@ -210,7 +210,7 @@ def conectar_firebase():
     return firestore.client()
 
 
-def salvar_saidas(markdown, latex, markdown_estruturado, latex_estruturado):
+def salvar_saidas(markdown, latex, markdown_estruturado, latex_estruturado, imagem_bytes = None):
     """
     Salva as saídas de processamento (Markdown e LaTeX) no Firestore.
 
@@ -229,6 +229,7 @@ def salvar_saidas(markdown, latex, markdown_estruturado, latex_estruturado):
         latex (str): Código em LaTeX bruto.
         markdown_estruturado (str): Versão estruturada do Markdown.
         latex_estruturado (str): Versão estruturada do LaTeX.
+        imagem_bytes (bytes, opcional): Bytes da imagem a ser salva no Firestore.
 
     Returns:
         str | bool: O ID do documento criado em caso de sucesso,
@@ -258,6 +259,13 @@ def salvar_saidas(markdown, latex, markdown_estruturado, latex_estruturado):
             'latex_estruturado': latex_estruturado
         }
 
+        if imagem_bytes:
+            try:
+                imagem_base64 = base64.b64encode(imagem_bytes).decode('utf-8')
+                dicionario['imagem'] = imagem_base64
+            except Exception as e:
+                logging.error(f"Erro ao salvar a imagem: {e}")
+                
         referencia.set(dicionario)
         logging.info(f"Saída salva com sucesso. DocID={referencia.id}, User={st.user.email}")
         return referencia.id
