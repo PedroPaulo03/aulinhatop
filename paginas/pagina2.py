@@ -1,8 +1,6 @@
 import streamlit as st
 import numpy as np
 from datetime import datetime
-import firebase_admin
-from firebase_admin import credentials, firestore
 from PIL import Image
 import io
 import base64
