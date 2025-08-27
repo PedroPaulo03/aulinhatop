@@ -12,7 +12,7 @@ if st.user:
     colecao = 'usuarios2'
     referencia = db.collection(colecao).document(st.user.email).collection('saidas')
 
-    saidas = list(referencias.stream())
+    saidas = list(referencia.stream())
     if saidas:
         lista_ids_saidas = []
         for doc in saidas:
