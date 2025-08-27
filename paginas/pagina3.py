@@ -1,12 +1,25 @@
 import streamlit as st
+import numpy as np
+from datetime import datetime
 import firebase_admin
 from firebase_admin import credentials, firestore
-from datetime import datetime
+from PIL import Image
+import io
+import base64
 
-st.title("Exemplos CRUD - Firebase")
+from funcoes import (
+    generate,
+    gerar_markdown,
+    estruturar_latex,
+    estruturar_markdown,
+)
 
-# Conectar Firebase
-    @st.cache_resource
+# Config
+st.set_page_config(layout="wide")
+st.title("✍️ Transforme seus textos escritos em formato LaTeX")
+
+# Firebase
+@st.cache_resource
 def conectar_firebase():
     try:
         firebase_admin.get_app()
@@ -18,120 +31,126 @@ def conectar_firebase():
 db = conectar_firebase()
 colecao = 'usuarios2'
 
-# CREATE - Criar documento
-st.header("Guarde os dados do usuário")
-#nome = st.text_input("Nome")
-if st.button("Salvar info do usuario"):
-    # Usa email do usuário como ID
-    informacoes = {'nome': st.user.name,
-                    'foto': st.user.picture,
-                    'email': st.user.email,
-                    'hora': datetime.now().strftime("%H:%M:%S")}
-    db.collection(colecao).add(informacoes)
-    st.write("Informações salvas com sucesso")
-
-
-# READ - Ler documentos  
-st.header("READ")
-if st.button("Listar todos"):
-    docs = db.collection(colecao).stream()
-    for doc in docs:
-        st.write(f"{doc.id}: {doc.to_dict()}")
-
-# UPDATE - Atualizar documento
-st.header("UPDATE")
-doc_id = st.text_input("ID do documento")
-novo_nome = st.text_input("Novo nome")
-if st.button("Atualizar"):
-    db.collection(colecao).document(doc_id).update({'nome': novo_nome})
-    st.write("Atualizado!")
-
-# DELETE - Deletar documento
-st.header("DELETE")  
-id_deletar = st.text_input("ID para deletar")
-if st.button("Deletar"):
-    db.collection(colecao).document(id_deletar).delete()
-    st.write("Deletado!")
-
-st.header("📚 Outros métodos úteis do Firebase")
-
-# CONTADOR - Sistema simples de contagem
-st.subheader("🔢 Contador Pessoal")
-col1, col2 = st.columns(2)
-with col1:
-    if st.button("➕ Incrementar"):
-        user_ref = db.collection(colecao).document(st.user.email)
-        doc = user_ref.get()
-        dados = doc.to_dict() if doc.exists else {}
-        contador_atual = dados.get('contador', 0)
-        dados['contador'] = contador_atual + 1
-        user_ref.set(dados)
-        st.rerun()
-
-with col2:
-    if st.button("🔍 Ver contador"):
-        doc = db.collection(colecao).document(st.user.email).get()
-        dados = doc.to_dict() if doc.exists else {}
-        total = dados.get('contador', 0)
-        st.metric("Seu contador", total)
-
-# NOTAS - Sistema de anotações
-st.subheader("📝 Notas Rápidas")
-nova_nota = st.text_input("Nova nota")
-if st.button("💾 Salvar nota"):
-    from datetime import datetime
+if st.user:
     user_ref = db.collection(colecao).document(st.user.email)
     doc = user_ref.get()
     dados = doc.to_dict() if doc.exists else {}
-    
-    if 'notas' not in dados:
-        dados['notas'] = []
-    
-    dados['notas'].append({
-        'texto': nova_nota,
-        'horario': datetime.now().strftime('%d/%m %H:%M')
-    })
-    user_ref.set(dados)
-    st.success("Nota salva!")
 
-if st.button("📋 Ver minhas notas"):
-    doc = db.collection(colecao).document(st.user.email).get()
-    dados = doc.to_dict() if doc.exists else {}
-    notas = dados.get('notas', [])
-    
-    if notas:
-        for nota in notas:  
-            st.write(f"📝 {nota['horario']}: {nota['texto']}")
+    if 'conversas' not in dados:
+        dados['conversas'] = []
+
+    # Upload de imagens
+    imagens_carregadas = st.file_uploader(
+        "Selecione uma ou mais imagens (.png, .jpeg, .jpg)",
+        type=["png", "jpeg", "jpg"],
+        accept_multiple_files=True
+    )
+
+    if imagens_carregadas is None or len(imagens_carregadas) == 0:
+        st.info("Por favor, carregue uma imagem para começar.")
+
+    col1, col2 = st.columns(2)
+
+    # Pré-visualização
+    with col1:
+        if imagens_carregadas and len(imagens_carregadas) > 0:
+            st.subheader('Pré-visualização da imagem')
+            imagem_visualizada = st.selectbox(
+                label='Selecione a imagem para pré-visualização',
+                format_func=lambda img: img.name if img else "Arquivo desconhecido",
+                options=imagens_carregadas,
+                index=0,
+                label_visibility='hidden'
+            )
+        else:
+            imagem_visualizada = None
+
+        if imagem_visualizada is not None:
+            imagem_bytes = imagem_visualizada.getvalue()
+            st.image(imagem_bytes, caption="Imagem selecionada", use_container_width=True)
+
+    # Processamento
+    saidas_latex = None
+    saidas_markdown = None
+
+    with col2:
+        if imagens_carregadas and len(imagens_carregadas) > 0:
+            if st.button("Processar Imagem e Gerar Códigos", key="process_button", use_container_width=True):
+                saidas_latex = ''
+                saidas_markdown = ''
+                for i, imagem_carregada in enumerate(imagens_carregadas):
+                    if imagem_carregada.getvalue():
+                        with st.spinner(f"Convertendo texto da página {i+1} para Markdown e LaTeX..."):
+                            file_bytes = imagem_carregada.getvalue()
+                            try:
+                                saida_latex = generate(file_bytes, type=imagem_carregada.type)
+                                saidas_latex += saida_latex + "\n\n"
+
+                                saida_markdown = gerar_markdown(file_bytes, type=imagem_carregada.type)
+                                saidas_markdown += saida_markdown + "\n"
+
+                                # Salva cada imagem + latex no Firebase
+                                imagem_base64 = base64.b64encode(file_bytes).decode("utf-8")
+                                dados['conversas'].append({
+                                    'imagem': imagem_base64,
+                                    'resposta_latex': saida_latex,
+                                    'horario': datetime.now().strftime("%d/%m %H:%M")
+                                })
+                                user_ref.set(dados)
+
+                            except Exception as e:
+                                st.error(f"Erro ao processar a imagem: {e}")
+
+                # Exibir visualização
+                st.markdown("---")
+                st.subheader("Visualização (Markdown):")
+                st.markdown(saidas_markdown)
+
+                # Preparar para download
+                saida_final_latex = estruturar_latex(saidas_latex)
+                saida_final_markdown = estruturar_markdown(saidas_markdown)
+
+                col3, col4 = st.columns(2)
+                with col3:
+                    if saidas_latex:
+                        st.subheader('Código LaTeX gerado:')
+                        st.code(saidas_latex, language='latex', line_numbers=True, height=300)
+                        st.download_button(
+                            label="Baixar código LaTeX",
+                            data=saida_final_latex,
+                            file_name="relatorio.txt",
+                            mime="text/plain",
+                            use_container_width=True,
+                            key='download_latex'
+                        )
+                with col4:
+                    if saidas_markdown:
+                        st.subheader('Código Markdown gerado:')
+                        st.code(saidas_markdown, language='markdown', line_numbers=True, height=300)
+                        st.download_button(
+                            label="Baixar código Markdown",
+                            data=saida_final_markdown,
+                            file_name="texto.md",
+                            mime="text/markdown",
+                            use_container_width=True,
+                            key='download_markdown'
+                        )
+
+    st.divider()
+    st.subheader("📜 Histórico de Imagens e Respostas")
+    conversas = dados.get('conversas', [])
+    if not conversas:
+        st.info("Nenhuma conversa salva ainda.")
     else:
-        st.info("Nenhuma nota ainda")
+        for item in reversed(conversas):
+            st.markdown(f"🕒 {item['horario']}")
+            img_bytes = base64.b64decode(item['imagem'])
+            img = Image.open(io.BytesIO(img_bytes))
+            st.image(img, caption="Imagem enviada", use_column_width=True)
+            st.latex(item['resposta_latex'])
 
-# ESTATÍSTICAS - Análise simples
-st.subheader("📊 Estatísticas")
-if st.button("Total de usuários"):
-    docs = list(db.collection(colecao).stream())
-    st.metric("Total de usuários", len(docs))
+else:
+    st.warning("Você precisa estar logado para usar esta funcionalidade.")
 
-
-st.divider()
-
-# funções para carregar uma nota específica no sistema como se fosse uma avaliacao. 
-# é necessario guardar o campo para cada usuario na base de dados e salvar a informacao
-# sempre que o usuario clicar no botao st.feedback, deve guardar a nota que ele deu
-# se ele muda a avaliação, deve atualizar o campo na base de dados
-# se o usuario nao avaliou, deve mostrar a mensagem "Avalie este conteúdo"
-
-st.header("⭐ Avalie este conteúdo")
-nota_atual = 0      
-doc = db.collection(colecao).document(st.user.email).get()
-if doc.exists:
-    dados = doc.to_dict()
-    nota_atual = dados.get('nota_avaliacao', 0) 
-    if nota_atual > 0:
-        st.write(f"Você avaliou este conteúdo com {nota_atual} estrelas.")
-    else:
-        st.write("Avalie este conteúdo")    
-        nota = st.slider("Sua avaliação", 0, 5, nota_atual, step=1)
-        if st.button("Enviar avaliação"):
-            db.collection(colecao).document(st.user.email).update({'nota_avaliacao': nota})
-            st.success("Avaliação salva!")
-            st.rerun()
+if st.sidebar.button("Log out"):
+    st.logout()
