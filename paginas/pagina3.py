@@ -1,4 +1,6 @@
 import streamlit as st
+from datetime import datetime
+
 
 from funcoes import (
     conectar_firebase
