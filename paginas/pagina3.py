@@ -1,6 +1,5 @@
 import streamlit as st
 
-
 from funcoes import (
     conectar_firebase
 )
