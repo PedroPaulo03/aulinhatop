@@ -36,9 +36,9 @@ if st.user:
         )
 
         if visualizacao != "Nenhuma saída disponível":
-        # Em vez de usar index(), use dict para mapear
-        mapa_saidas = dict(zip(lista_ids_saidas, lista_docs_ids))
-        doc_id_real = mapa_saidas[visualizacao]
+            # Em vez de usar index(), use dict para mapear
+            mapa_saidas = dict(zip(lista_ids_saidas, lista_docs_ids))
+            doc_id_real = mapa_saidas[visualizacao]
 
             if st.button('Visualizar'):
                 col1, col2 = st.columns(2)
@@ -55,7 +55,7 @@ if st.user:
             st.header('Código LaTeX')
             codigo_latex = documento.get("saida_latex", "Não encontrado")
             st.code(codigo_latex)
-            
+
             with col2:
             st.header('Código Markdown')
             codigo_markdown = documento.get("saida_markdown", "Não encontrado")
