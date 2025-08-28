@@ -21,6 +21,7 @@ if st.user:
             try:
                  # Converte string para datetime
                 dt = datetime.strptime(id, "%Y%m%d%H%M%S")
+
                 # Formata para string legível
                 legivel = dt.strftime("%d/%m/%Y %H:%M:%S")
                 lista_ids_saidas.append(f'Feito em: {legivel}')
