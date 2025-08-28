@@ -27,29 +27,26 @@ if st.user:
                 lista_docs_ids.append(id)
 
             except Exception as e:
-                print(f'Erro ao transformar id={id} em data: {e}')
+                print(f'Erro ao transformar a data em formato legível: {e}')
             
-        if lista_ids_saidas:  # só cria o selectbox se tiver opções
-        visualizacao = st.selectbox(
-        'Selecione uma saída para visualizar',
-        options=lista_ids_saidas
-        )
-
-
-        if visualizacao:  # garante que não é None
+        visualizacao = st.selectbox('Selecione uma saída para visualizar', options = lista_ids_saidas)
         idx = lista_ids_saidas.index(visualizacao)
         doc_id_real = lista_docs_ids[idx]
+
+        if st.button('Visualizar'):
+            col1, col2 = st.columns(2)
+            documento = db.collection(colecao).document(st.user.email).collection('saidas').document(doc_id_real).get().to_dict()
              
             with col1:
-                st.header('Código LaTeX')
-                codigo_latex = documento.get("saida_latex")
-                st.code(codigo_latex)
-             with col2:
-                st.header('Código Markdown')
-                codigo_markdown = documento.get("saida_markdown")
-                st.code(codigo_markdown)
+                 st.header('Código LaTeX')
+                 codigo_latex = documento.get("saida_latex")
+                 st.code(codigo_latex)
+            with col2:
+                 st.header('Código Markdown')
+                 codigo_markdown = documento.get("saida_markdown")
+                 st.code(codigo_markdown)
     else:
-    st.warning("Nenhuma saída pôde ser listada (verifique os IDs no banco).")
+        st.info('Você ainda não carregou nenhuma imagem. Acesse a aba Transformação para converter sua primeira imagem em código LaTeX ou Markdown!')
 else:
     st.info('Você ainda não fez o login!')
 
