@@ -33,12 +33,12 @@ if st.user:
         visualizacao = st.selectbox(
         'Selecione uma saída para visualizar',
         options=lista_ids_saidas if lista_ids_saidas else ["Nenhuma saída disponível"]
-        )
+            )
 
     if visualizacao != "Nenhuma saída disponível":
     # Em vez de usar index(), use dict para mapear
-        mapa_saidas = dict(zip(lista_ids_saidas, lista_docs_ids))
-        doc_id_real = mapa_saidas[visualizacao]
+    mapa_saidas = dict(zip(lista_ids_saidas, lista_docs_ids))
+    doc_id_real = mapa_saidas[visualizacao]
 
     if st.button('Visualizar'):
         col1, col2 = st.columns(2)
@@ -61,5 +61,6 @@ if st.user:
             st.code(codigo_markdown)
 else:
     st.info('Você ainda não carregou nenhuma imagem...')
+
 
 
