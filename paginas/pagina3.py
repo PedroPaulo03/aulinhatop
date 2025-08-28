@@ -20,14 +20,14 @@ if st.user:
             id = doc.id
             try:
                  # Converte string para datetime
-                dt = datetime.strptime(doc_id, "%Y%m%d%H%M%S")
+                dt = datetime.strptime(id, "%Y%m%d%H%M%S")
                 # Formata para string legível
                 legivel = dt.strftime("%d/%m/%Y %H:%M:%S")
                 lista_ids_saidas.append(f'Feito em: {legivel}')
                 lista_docs_ids.append(id)
 
             except Exception as e:
-                print(f'Erro ao transformar a data em formato legível: {e}')
+                print(f'Erro ao transformar id={id} em data: {e}')
             
         visualizacao = st.selectbox('Selecione uma saída para visualizar', options = lista_ids_saidas)
         idx = lista_ids_saidas.index(visualizacao)
