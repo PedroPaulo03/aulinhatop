@@ -209,6 +209,57 @@ def conectar_firebase():
         firebase_admin.initialize_app(cred)
     return firestore.client()
 
+def gerar_estruturado(imagem_bytes, type):
+    """
+    Faz uma única chamada à API e retorna LaTeX e Markdown estruturados.
+    """
+    client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
+    modelo = "gemini-2.5-flash-preview-05-20"
+
+    prompt = f"""
+    Converta as anotações manuscritas da imagem fornecida e entregue **somente** em duas partes:
+    
+    [MARKDOWN]
+    (Markdown estruturado com LaTeX inline e em bloco, preservando quebras de linha)
+    
+    [LATEX]
+    (Documento LaTeX completo com estrutura básica \documentclass, pacotes essenciais e o conteúdo reproduzido)
+    """
+
+    contents = [
+        types.Content(
+            role="user",
+            parts=[
+                types.Part.from_bytes(
+                    mime_type=type,
+                    data=imagem_bytes,
+                ),
+                types.Part.from_text(text=prompt),
+            ],
+        ),
+    ]
+
+    config = types.GenerateContentConfig(
+        response_mime_type="text/plain",
+    )
+
+    resposta = client.models.generate_content(
+        model=modelo,
+        contents=contents,
+        config=config,
+    )
+
+    # separa os dois blocos pelo marcador
+    texto = resposta.text
+    try:
+        md_part = texto.split("[MARKDOWN]")[1].split("[LATEX]")[0].strip()
+        latex_part = texto.split("[LATEX]")[1].strip()
+    except Exception:
+        md_part, latex_part = texto, ""
+
+    return md_part, latex_part
+
+
 
 def salvar_saidas(markdown, latex, markdown_estruturado, latex_estruturado, imagem_bytes = None):
     """
@@ -270,54 +321,5 @@ def salvar_saidas(markdown, latex, markdown_estruturado, latex_estruturado, imag
         logging.error(f"Erro ao salvar saída no Firestore: {e}", exc_info=True)
         return False
 
-def gerar_estruturado(imagem_bytes, type):
-    """
-    Faz uma única chamada à API e retorna LaTeX e Markdown estruturados.
-    """
-    client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
-    modelo = "gemini-2.5-flash-preview-05-20"
-
-    prompt = f"""
-    Converta as anotações manuscritas da imagem fornecida e entregue **somente** em duas partes:
-    
-    [MARKDOWN]
-    (Markdown estruturado com LaTeX inline e em bloco, preservando quebras de linha)
-    
-    [LATEX]
-    (Documento LaTeX completo com estrutura básica \documentclass, pacotes essenciais e o conteúdo reproduzido)
-    """
-
-    contents = [
-        types.Content(
-            role="user",
-            parts=[
-                types.Part.from_bytes(
-                    mime_type=type,
-                    data=imagem_bytes,
-                ),
-                types.Part.from_text(text=prompt),
-            ],
-        ),
-    ]
-
-    config = types.GenerateContentConfig(
-        response_mime_type="text/plain",
-    )
-
-    resposta = client.models.generate_content(
-        model=modelo,
-        contents=contents,
-        config=config,
-    )
-
-    # separa os dois blocos pelo marcador
-    texto = resposta.text
-    try:
-        md_part = texto.split("[MARKDOWN]")[1].split("[LATEX]")[0].strip()
-        latex_part = texto.split("[LATEX]")[1].strip()
-    except Exception:
-        md_part, latex_part = texto, ""
-
-    return md_part, latex_part
 
 
