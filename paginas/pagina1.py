@@ -61,12 +61,10 @@ with col2:
                     with st.spinner(f"Convertendo texto da página {i+1} para Markdown e LaTeX...", show_time=True):
                         file_bytes = imagem_carregada.getvalue()
                         try: 
-                            saida_latex = generate(file_bytes, type=imagem_carregada.type)
+                            saida_markdown, saida_latex = gerar_estruturado(file_bytes, type=imagem_carregada.type)
+                            saidas_markdown += saida_markdown + "\n\n"
                             saidas_latex += saida_latex + "\n\n"
 
-                            saida_markdown = gerar_markdown(file_bytes, type=imagem_carregada.type)
-                            saidas_markdown += saida_markdown + '''  
-'''
                         except Exception as e:
                             st.error(f"Erro ao processar a imagem: {e}")
                                 
@@ -79,8 +77,8 @@ with col2:
             # st.markdown(saidas)
             st.markdown(saidas_markdown)
             # Baixar o resultado em LaTeX e Markdown
-            saida_final_latex = estruturar_latex(saidas_latex)
-            saida_final_markdown = estruturar_markdown(saidas_markdown)
+            saida_final_latex = saidas_latex
+            saida_final_markdown = saidas_markdown
 
 st.divider()
 with st.spinner("Gerando códigos", show_time=True, width = "stretch"):
