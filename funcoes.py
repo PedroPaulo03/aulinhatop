@@ -6,7 +6,12 @@ from firebase_admin import credentials, firestore
 from datetime import datetime
 from google import genai
 from google.genai import types
-
+import smtplib
+import ssl
+from email.message import EmailMessage
+from email.utils import formataddr
+import mimetypes
+import re
 
 INSTRUCOES = """
 você é um assistente de IA que converte anotações manuscritas em **LaTeX puro**  
@@ -322,4 +327,29 @@ def salvar_saidas(markdown, latex, markdown_estruturado, latex_estruturado, imag
         return False
 
 
+def enviar_emails(documento, lista_destinatarios):
+    email_remetente = st.secrets["gmail"]["email"]
+    senha_app = st.secrets["gmail"]["app_password"]
+    nome_remetente = st.secrets["gmail"]["nome"]
 
+    # --- Montagem do E-mail (feito uma vez, pois o conteúdo é o mesmo para todos) ---
+    assunto = " Seu Código está pronto!"
+    corpo_texto = " Segue anexo dos códigos em LateX e Markdow" # Fallback de texto puro
+    documento = documento
+
+    msg = EmailMessage()
+    msg['Subject'] = assunto
+    msg['From'] = formataddr((nome_remetente, email_remetente))
+    # Junta a lista de e-mails em uma string separada por vírgulas
+    msg['To'] = ", ".join(lista_destinatarios)
+    msg.set_content(corpo_texto)
+    msg.add_alternative(documento, subtype='txt')
+   
+    try:
+        contexto_ssl = ssl.create_default_context()
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=contexto_ssl) as servidor:
+            servidor.login(email_remetente, senha_app)
+            servidor.send_message(msg)
+        return True, f"E-mail enviado com sucesso para {len(lista_destinatarios)} destinatário(s)!"
+    except Exception as e:
+        return False, f"Ocorreu um erro inesperado: {e}"
