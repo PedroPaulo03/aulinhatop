@@ -4,7 +4,8 @@ from funcoes import(
     generate,
     gerar_markdown,
     estruturar_latex,
-    estruturar_markdown,   
+    estruturar_markdown,
+    gerar_estruturado
 )
 
 st.set_page_config(layout = "wide")
