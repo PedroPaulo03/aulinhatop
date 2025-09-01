@@ -16,9 +16,9 @@ if st.user.is_logged_in:
 
 
 else:
-    st.title("FotoLateX")
+    st.title("Mestre Digitalizador")
     st.markdown("*Bem-vindo ao seu escrivão especializado! Aqui você pode acompanhar seus códigos em LateX.*")
-    st.image('paginas/arquivos/imagelatex.png', width=200, use_container_width=True)
+    st.image('paginas/arquivos/Generated Image September 01, 2025 - 6_06PM.jpeg', width=200, use_container_width=True)
     st.markdown("Faça login com sua conta Google para o uso da ferramenta. ")
     # st.write(st.user)
     if st.button("Login com Google", type="primary", use_container_width=True, icon=':material/login:'):
