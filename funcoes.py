@@ -353,3 +353,10 @@ def enviar_emails(documento, lista_destinatarios):
         return True, f"E-mail enviado com sucesso para {len(lista_destinatarios)} destinatário(s)!"
     except Exception as e:
         return False, f"Ocorreu um erro inesperado: {e}"
+
+
+class ResultadoProcessamento:
+    def __init__(self, nome_arquivo: str, saida_markdown: str, saida_latex: str):
+        self.nome_arquivo = nome_arquivo
+        self.markdown = saida_markdown
+        self.latex = saida_latex
