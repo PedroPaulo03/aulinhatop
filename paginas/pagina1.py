@@ -1,8 +1,5 @@
 import streamlit as st
 import numpy as np
-import time
-from typing import List, Optional
-from pydantic import BaseModel
 from funcoes import(
     generate,
     gerar_markdown,
@@ -12,99 +9,110 @@ from funcoes import(
 )
 from typing import List
 
-st.set_page_config(layout="wide")
+st.set_page_config(layout = "wide")
+  
+st.title("✍️ Transforme seus textos escritos em formato LaTeX")
+st.info("Instruções: Este app foi pensando para atenter as seguintes pessoas: o monitor, professor, aluno e pesquisador que ao fazer algo de maneira escrita na mão grande no papel, quadro ou tablet, que contenha fórmulas matemáticas dutante o texto e tem interesse em digitalizar o arquivo, passando assim para o formato LateX, e é nessa prte que entramos, preparamos a escrita no LateX para você.")
 
-st.title("✍️ Conversor Inteligente para LaTeX & Markdown")
-st.markdown("Use o **Modo Simples** para converter uma única imagem ou o **Modo Inteligente** para carregar várias imagens fora de ordem e deixar a IA organizá-las para você.")
 
-# Inicializar o session_state para cada modo
-if 'resultado_simples' not in st.session_state:
-    st.session_state.resultado_simples: Optional[SaidaSimples] = None
-if 'resultado_unificado' not in st.session_state:
-    st.session_state.resultado_unificado: Optional[SaidaUnificada] = None
+imagens_carregadas = st.file_uploader(
+    "Selecione uma imagem (.png, .jpeg, .jpg) )",
+    type=["png", "jpeg", "jpg"],
+    accept_multiple_files=True # Para este exemplo, apenas um arquivo por vez
+)
 
+if imagens_carregadas is None or len(imagens_carregadas) == 0:
+    st.info("Por favor, carregue uma imagem para começar.")
 
 col1, col2 = st.columns(2)
 
-# --- COLUNA 1: MODO SIMPLES (UMA IMAGEM) ---
 with col1:
-    st.header("1️⃣ Modo Simples")
-    st.info("Carregue uma única imagem para conversão direta.")
-
-    imagem_unica = st.file_uploader(
-        "Selecione uma imagem (.png, .jpeg, .jpg)",
-        type=["png", "jpeg", "jpg"],
-        key="uploader_simples"
-    )
-
-    if imagem_unica:
-        st.image(imagem_unica, caption="Imagem carregada.", use_container_width=True)
-
-    if st.button("Transformar Imagem Única", use_container_width=True, disabled=not imagem_unica):
-        with st.spinner("Processando a imagem..."):
-            # Substitua pela sua chamada real
-            st.session_state.resultado_simples = mock_gerar_saida_simples(imagem_unica.getvalue(), imagem_unica.name)
-    
-    # Exibição dos resultados do modo simples
-    if st.session_state.resultado_simples:
-        st.divider()
-        st.subheader("Resultado (Modo Simples)")
-        
-        res_simples = st.session_state.resultado_simples
-        
-        st.markdown("### Pré-visualização (Markdown)")
-        st.markdown(res_simples.markdown, unsafe_allow_html=True)
-
-        st.code(res_simples.latex, language='latex', line_numbers=True)
-        st.download_button("Baixar LaTeX", res_simples.latex, file_name="unico.tex", use_container_width=True)
+    if imagens_carregadas is True or len(imagens_carregadas) != 0:
+        st.subheader('Pré-visualização da imagem')
+        imagem_visualizada = st.selectbox(label='Selecione a imagem para pré-visualização',
+                                        format_func=lambda img: img.name if img else "Arquivo desconhecido",
+                                        options = imagens_carregadas, index = 0, label_visibility='hidden')
+    else:
+        imagem_visualizada = None
+    if imagem_visualizada is not None:
+        imagem_bytes = imagem_visualizada.getvalue()
+        st.image(imagem_bytes, caption="Imagem selecionada", use_container_width=True)
 
 
-# --- COLUNA 2: MODO INTELIGENTE (MÚLTIPLAS IMAGENS) ---
+# if imagens_carregadas is not None:
+#     with col1:
+#         st.subheader("Pré-visualização da Imagem:")
+#         # Exibe a imagem carregada. Para PDF, mostrará apenas a primeira página.
+#         st.image(imagens_carregadas, caption="Sua imagem carregada")#, width =300)
+
+# Definindo as variáveis para evitar erros em col3 e col4
+
+saidas_latex = None
+saidas_markdown = None
+
 with col2:
-    st.header("🧠 Modo Inteligente")
-    st.info("Carregue várias imagens de um quadro ou caderno. A IA irá inferir a ordem correta e unificar o conteúdo.")
-    
-    imagens_multiplas = st.file_uploader(
-        "Selecione as imagens (limite de 10)",
-        type=["png", "jpeg", "jpg"],
-        accept_multiple_files=True,
-        key="uploader_multiplo"
-    )
+    if imagens_carregadas and len(imagens_carregadas) > 0:  
+        if st.button("Processar Imagem e Gerar Códigos", key="process_button", use_container_width=True):
+            # Garante que o arquivo foi carregado antes de processa
+            saidas_latex = ''  # Variável para armazenar as saídas LaTeX
+            saidas_markdown = ''  # Variável para armazenar as saídas Markdown
+            for i, imagem_carregada in enumerate(imagens_carregadas):
+                
+                if imagem_carregada.getvalue():
+                    
+                    with st.spinner(f"Convertendo texto da página {i+1} para Markdown e LaTeX...", show_time=True):
+                        file_bytes = imagem_carregada.getvalue()
+                        try: 
+                            saida_markdown, saida_latex = gerar_estruturado(file_bytes, type=imagem_carregada.type)
+                            saidas_markdown += saida_markdown + "\n\n"
+                            saidas_latex += saida_latex + "\n\n"
 
-    if len(imagens_multiplas) > 10:
-        st.warning("Limite de 10 imagens excedido. Apenas as 10 primeiras serão processadas.")
-        imagens_multiplas = imagens_multiplas[:10]
+                        except Exception as e:
+                            st.error(f"Erro ao processar a imagem: {e}")
+                                
+                else:
+                        st.warning("Nenhum arquivo válido foi carregado para processamento.")
 
-    if imagens_multiplas:
-        st.success(f"{len(imagens_multiplas)} imagens carregadas. Pronto para processar!")
+            # Exibir o resultado em LaTeX
+            st.markdown("---")
+            st.subheader("Visualização:")             
+            # st.markdown(saidas)
+            st.markdown(saidas_markdown)
+            # Baixar o resultado em LaTeX e Markdown
+            saida_final_latex = saidas_latex
+            saida_final_markdown = saidas_markdown
 
-    if st.button("Ordenar e Unificar Imagens", use_container_width=True, type="primary", disabled=len(imagens_multiplas) < 2):
-        with st.spinner("Analisando, ordenando e unificando as imagens... Isso pode levar um momento."):
-            # Substitua pela sua chamada real
-            st.session_state.resultado_unificado = mock_ordenar_e_unificar_imagens(imagens_multiplas)
+st.divider()
+with st.spinner("Gerando códigos", show_time=True, width = "stretch"):
+    try:
+        col3, col4 = st.columns(2)
 
-    # Exibição dos resultados do modo inteligente
-    if st.session_state.resultado_unificado:
-        st.divider()
-        st.subheader("Resultado Unificado (Modo Inteligente)")
-        
-        res_unificado = st.session_state.resultado_unificado
-        
-        st.markdown("#### Ordem Inferida pela IA:")
-        ordem_formatada = " ➔ ".join(f"`{nome}`" for nome in res_unificado.ordem_inferida)
-        st.markdown(ordem_formatada)
-        
-        st.markdown("#### Pré-visualização do Documento Completo")
-        with st.container(height=300):
-            st.markdown(res_unificado.markdown_completo)
-            
-        st.markdown("#### Códigos Completos")
-        tab_latex, tab_md = st.tabs(["LaTeX Completo", "Markdown Completo"])
-        
-        with tab_latex:
-            st.code(res_unificado.latex_completo, language='latex', line_numbers=True)
-            st.download_button("Baixar LaTeX Unificado", res_unificado.latex_completo, file_name="documento_unificado.tex", use_container_width=True)
-        
-        with tab_md:
-            st.code(res_unificado.markdown_completo, language='markdown', line_numbers=True)
-            st.download_button("Baixar Markdown Unificado", res_unificado.markdown_completo, file_name="documento_unificado.md", use_container_width=True)
+        with col3:
+            if saidas_latex:
+                st.subheader('Código LaTeX gerado:')
+                st.code(saidas_latex, language='latex', line_numbers=True, height=300)
+                st.download_button(
+                        label="Baixar código LaTeX",
+                        data=saida_final_latex,            # sua string de texto
+                        file_name="relatorio.txt",   # extensão .txt
+                        mime="text/plain",
+                        use_container_width=True,
+                        key ='download_latex'  # Adiciona uma chave única para evitar conflitos  
+                    )
+
+        with col4:
+            if saidas_markdown:
+                st.subheader('Código Markdown gerado:')
+                st.code(saidas_markdown, language='markdown', line_numbers=True, height=300)
+                st.download_button(
+                    label="Baixar código Markdown",
+                    data=saida_final_markdown,            # sua string de texto
+                    file_name="texto.md",   # extensão .md
+                    mime="text/markdown",
+                    use_container_width=True,
+                    key ='download_markdown'  # Adiciona uma chave única para evitar conflitos           
+                    )
+    except Exception as e:
+        st.error(f"Erro ao gerar os códigos:{e}")
+
+
