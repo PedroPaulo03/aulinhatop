@@ -12,6 +12,7 @@ from email.message import EmailMessage
 from email.utils import formataddr
 import mimetypes
 import re
+import base64 
 
 INSTRUCOES = """
 você é um assistente de IA que converte anotações manuscritas em **LaTeX puro**  
