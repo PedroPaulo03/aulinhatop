@@ -1,5 +1,6 @@
     import streamlit as st
-    from datetime import datetime
+    from datetime 
+    import datetime
     import base64 # <-- **ADICIONAR ESTA LINHA** para decodificar a imagem
 
     from funcoes import (
