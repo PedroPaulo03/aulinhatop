@@ -3,7 +3,6 @@ import numpy as np
 from datetime import datetime
 from PIL import Image
 import io
-import base64
 
 from funcoes import (
     generate,
