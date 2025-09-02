@@ -1,12 +1,9 @@
     import streamlit as st
-    from datetime 
-    import datetime
-    import base64 # <-- **ADICIONAR ESTA LINHA** para decodificar a imagem
-
+    from datetime import datetime
+    import base64
     from funcoes import (
-        conectar_firebase
-    )
-
+    conectar_firebase
+)
     st.title("Visualize o Histórico de Códigos Feitos!")
 
     # Verifica se o usuário está autenticado
