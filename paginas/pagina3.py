@@ -109,8 +109,3 @@ if st.user:
 else: # Caso o usuário não esteja logado
     st.warning('Por favor, faça login para visualizar seu histórico.')
 
-else:
-    st.warning("Você precisa estar logado para usar esta funcionalidade.")
-
-if st.sidebar.button("Log out"):
-    st.logout()
