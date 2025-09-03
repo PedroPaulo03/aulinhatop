@@ -354,3 +354,22 @@ def enviar_emails(documento, lista_destinatarios):
         return True, f"E-mail enviado com sucesso para {len(lista_destinatarios)} destinatário(s)!"
     except Exception as e:
         return False, f"Ocorreu um erro inesperado: {e}"
+
+def login_usuario():
+    """
+    Registra ou atualiza dados do usuário no Firestore.
+    Cria um novo registro se o usuário não existir, ou atualiza o último acesso se já existir.
+    Retorna True se for o primeiro login, False caso contrário.
+    """
+    if not hasattr(st.experimental_user, 'email'):
+        return False # Se não houver email, não tenta registrar o usuário
+        
+    db = firestore.client()
+    doc_ref = db.collection('usuarios2').document(st.experimental_user.email)
+    doc = doc_ref.get()
+
+    if not doc.exists:
+        dados_usuario = {
+            # Dados do Google Login
+            "email": st.experimental_user.email
+            }
