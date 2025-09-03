@@ -12,11 +12,10 @@ st.title("Visualize o Histórico de Códigos Feitos!")
 
 
 # Tudo dentro deste 'if' deve estar indentado uma vez
-if 'user' in st.session_state and st.session_state.user:
+if st.user: 
     with st.sidebar:
         if st.button("Logout", type="secondary"):
-            st.session_state.user = None
-            st.rerun()
+            st.logout()
     # Tudo dentro deste 'if' deve estar indentado uma vez
     db = conectar_firebase()
     colecao = 'usuarios2'
